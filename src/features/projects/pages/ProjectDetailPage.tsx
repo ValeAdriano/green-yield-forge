@@ -8,10 +8,10 @@ import { Loading } from '@/components/Loading';
 import { ErrorState } from '@/components/ErrorState';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { AggregateProject } from '@/types';
-import { projectsApi } from '../services/projects.api';
 import { formatCurrency, formatTons, formatDate } from '@/lib/format';
 import { useCartStore } from '@/store/cart.store';
 import { toast } from '@/hooks/use-toast';
+import { getProjectById, getBatchesByProjectId, getOrdersByProjectId } from '@/data/mockData';
 
 export const ProjectDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,8 +26,19 @@ export const ProjectDetailPage = () => {
     try {
       setLoading(true);
       setError(false);
-      const result = await projectsApi.getAggregate(id);
-      setData(result);
+      // Simulando delay de API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const project = getProjectById(id);
+      if (!project) {
+        setError(true);
+        return;
+      }
+      
+      const batches = getBatchesByProjectId(id);
+      const lastOrders = getOrdersByProjectId(id);
+      
+      setData({ project, batches, lastOrders });
     } catch (err) {
       setError(true);
     } finally {

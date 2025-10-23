@@ -5,9 +5,9 @@ import { ErrorState } from '@/components/ErrorState';
 import { EmptyState } from '@/components/EmptyState';
 import { Package } from 'lucide-react';
 import { Order } from '@/types';
-import { ordersApi } from '../services/orders.api';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { toast } from '@/hooks/use-toast';
+import { mockOrders } from '@/data/mockData';
 
 export const OrdersListPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -20,8 +20,9 @@ export const OrdersListPage = () => {
     try {
       setLoading(true);
       setError(false);
-      const data = await ordersApi.getAll();
-      setOrders(data);
+      // Simulando delay de API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setOrders(mockOrders);
     } catch (err) {
       setError(true);
     } finally {
@@ -42,14 +43,23 @@ export const OrdersListPage = () => {
     if (!selectedOrderId) return;
 
     try {
-      await ordersApi.cancel(selectedOrderId);
+      // Simulando cancelamento
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setOrders(orders.map(order => 
+        order.id === selectedOrderId 
+          ? { ...order, status: 'CANCELLED' as const }
+          : order
+      ));
       toast({
         title: 'Pedido cancelado',
         description: 'O pedido foi cancelado com sucesso',
       });
-      loadOrders();
     } catch (err) {
-      // Error handled by interceptor
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível cancelar o pedido',
+        variant: 'destructive',
+      });
     } finally {
       setCancelDialogOpen(false);
       setSelectedOrderId(null);

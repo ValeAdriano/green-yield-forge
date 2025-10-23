@@ -9,9 +9,8 @@ import { ErrorState } from '@/components/ErrorState';
 import { EmptyState } from '@/components/EmptyState';
 import { Package } from 'lucide-react';
 import { Project, Batch, ProjectFilters as Filters } from '@/types';
-import { projectsApi } from '../services/projects.api';
-import { batchesApi } from '../services/batches.api';
 import { useUIStore } from '@/store/ui.store';
+import { mockProjects, mockBatches } from '@/data/mockData';
 
 export const ProjectsListPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -26,12 +25,10 @@ export const ProjectsListPage = () => {
     try {
       setLoading(true);
       setError(false);
-      const [projectsData, batchesData] = await Promise.all([
-        projectsApi.getAll(),
-        batchesApi.getAll(),
-      ]);
-      setProjects(projectsData);
-      setBatches(batchesData);
+      // Simulando delay de API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setProjects(mockProjects);
+      setBatches(mockBatches);
     } catch (err) {
       setError(true);
     } finally {
