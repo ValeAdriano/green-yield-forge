@@ -1,73 +1,226 @@
-# Welcome to your Lovable project
+# CarbonCredits - Marketplace de Créditos de Carbono
 
-## Project info
+Microfrontend moderno e acessível para marketplace de créditos de carbono certificados.
 
-**URL**: https://lovable.dev/projects/973dda68-c248-4ffa-b4bc-5a9419bbea3a
+## 🌿 Sobre o Projeto
 
-## How can I edit this code?
+CarbonCredits é uma plataforma que conecta empresas a projetos ambientais certificados, facilitando a compensação de emissões de carbono de forma transparente e eficiente.
 
-There are several ways of editing your application.
+## 🚀 Tecnologias
 
-**Use Lovable**
+- **React 18** + **TypeScript** - Interface moderna e type-safe
+- **Vite** - Build tool ultrarrápido
+- **React Router** - Navegação SPA
+- **Axios** - Cliente HTTP com interceptors
+- **Zustand** - State management simples e eficiente
+- **Zod** - Validação de schemas
+- **Tailwind CSS** - Estilização utility-first
+- **shadcn/ui** - Componentes acessíveis e customizáveis
+- **Vitest + Testing Library** - Testes unitários e de componentes
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/973dda68-c248-4ffa-b4bc-5a9419bbea3a) and start prompting.
+## 📋 Pré-requisitos
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js >= 18
+- npm ou yarn
 
-**Use your preferred IDE**
+## ⚙️ Configuração
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Clone o repositório
+2. Instale as dependências:
+```bash
+npm install
 ```
 
-**Edit a file directly in GitHub**
+3. Configure as variáveis de ambiente:
+```bash
+cp .env.example .env
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Edite o arquivo `.env` e configure:
+```
+VITE_API_BASE_URL=http://localhost:8000/api/v1
+```
 
-**Use GitHub Codespaces**
+## 🏃 Rodando o Projeto
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Desenvolvimento
+```bash
+npm run dev
+```
+Acesse: http://localhost:8080
 
-## What technologies are used for this project?
+### Build de Produção
+```bash
+npm run build
+```
 
-This project is built with:
+### Preview da Build
+```bash
+npm run preview
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Testes
+```bash
+npm run test
+```
 
-## How can I deploy this project?
+## 🎨 Paleta de Cores
 
-Simply open [Lovable](https://lovable.dev/projects/973dda68-c248-4ffa-b4bc-5a9419bbea3a) and click on Share -> Publish.
+- **Verde Escuro (Primary)**: `#0F5132` - HSL(150, 70%, 19%)
+- **Cinza (Secondary)**: `#6B7280` - HSL(220, 9%, 46%)
+- **Preto (Background)**: `#0B0B0C` - HSL(240, 7%, 4%)
+- **Branco (Foreground)**: `#FFFFFF` - HSL(0, 0%, 100%)
 
-## Can I connect a custom domain to my Lovable project?
+## 📱 Funcionalidades
 
-Yes, you can!
+### ✅ Principais Features
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- **Exploração de Projetos**: Listagem com filtros avançados (localização, certificadora, preço, status)
+- **Detalhes do Projeto**: Visualização completa com lotes disponíveis e histórico de pedidos
+- **Carrinho Inteligente**: Sistema de reserva com timer de 15 minutos por item
+- **Checkout**: Processo simplificado com validação robusta
+- **Gestão de Pedidos**: Acompanhamento de status e histórico
+- **Favoritos**: Salvar projetos favoritos (localStorage)
+- **Comparação de Lotes**: Comparar até 4 lotes lado a lado
+- **Ingestão por Evento**: Criação assíncrona via Edge Functions
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### 🎯 Diferenciais
+
+- **Dark Mode por padrão** - Interface otimizada para baixo cansaço visual
+- **Acessibilidade WCAG 2.1 AA** - Navegação por teclado, ARIA, contraste adequado
+- **Responsivo Mobile-First** - Funciona perfeitamente em todos os dispositivos
+- **Timer de Reserva** - Evita conflitos em compras simultâneas
+- **Validação em Tempo Real** - Feedback imediato com Zod schemas
+- **Idempotency Keys** - Headers automáticos para segurança em requisições
+
+## 🗂️ Estrutura do Projeto
+
+```
+src/
+├── app/                    # Configuração de rotas
+├── components/             # Componentes reutilizáveis
+│   ├── ui/                # shadcn/ui components
+│   ├── AppShell.tsx       # Layout principal
+│   ├── DataTable.tsx      # Tabela com paginação
+│   ├── Loading.tsx        # Estado de carregamento
+│   ├── ErrorState.tsx     # Estado de erro
+│   └── EmptyState.tsx     # Estado vazio
+├── features/              # Features organizadas por domínio
+│   ├── projects/
+│   │   ├── components/   # ProjectCard, Filters, Compare...
+│   │   ├── pages/        # List e Detail pages
+│   │   └── services/     # API calls
+│   ├── orders/
+│   │   ├── components/   # OrderCard, CheckoutSummary
+│   │   ├── pages/        # Orders, Checkout
+│   │   └── services/
+│   └── events/
+│       └── services/
+├── lib/                   # Utilitários
+│   ├── api.ts            # Cliente Axios configurado
+│   ├── validators.ts     # Schemas Zod
+│   └── format.ts         # Formatação de moeda/data/tons
+├── pages/                # Páginas standalone
+│   ├── HomePage.tsx
+│   ├── CartPage.tsx
+│   └── IngestPage.tsx
+├── store/                # Zustand stores
+│   ├── cart.store.ts     # Carrinho com timer
+│   ├── favorites.store.ts
+│   └── ui.store.ts       # Compare drawer state
+└── types/                # TypeScript types
+```
+
+## 🔌 Integração com BFF
+
+O frontend consome as seguintes rotas do BFF:
+
+### Projetos
+- `GET /projects` - Lista todos os projetos
+- `GET /projects/:id` - Detalhes de um projeto
+- `GET /aggregate/project/:id` - Projeto com lotes e pedidos
+- `POST /projects` - Criar novo projeto
+- `PUT /projects/:id` - Atualizar projeto
+- `DELETE /projects/:id` - Remover projeto
+
+### Lotes
+- `GET /batches` - Lista todos os lotes
+- `GET /batches/:id` - Detalhes de um lote
+- `POST /batches` - Criar novo lote
+- `PUT /batches/:id` - Atualizar lote
+- `DELETE /batches/:id` - Remover lote
+
+### Pedidos
+- `GET /orders` - Lista todos os pedidos
+- `GET /orders/:id` - Detalhes de um pedido
+- `POST /orders` - Criar novo pedido
+- `PUT /orders/:id` - Atualizar pedido (cancelar)
+
+### Eventos
+- `POST /events/ingest` - Ingestão assíncrona de projeto+lote
+- `POST /events/receipt` - Simular pagamento de pedido
+
+## 🧪 Testes
+
+Exemplos de testes implementados:
+
+```bash
+# Rodar todos os testes
+npm run test
+
+# Com coverage
+npm run test:coverage
+
+# Watch mode
+npm run test:watch
+```
+
+Casos de teste incluem:
+- Renderização de páginas principais
+- Store de carrinho (adicionar, remover, expirar itens)
+- Validação de formulários
+- Componentes de UI
+
+## 📚 Documentação Adicional
+
+Para documentação completa da arquitetura (C4, Arc42, Canvas), consulte o repositório do backend.
+
+## 🎨 Screenshots
+
+### Home
+Hero section com CTAs para explorar projetos e cadastrar lotes.
+
+### Projetos
+Grid responsivo com cards de projetos, filtros avançados e ação de comparar lotes.
+
+### Detalhe do Projeto
+Informações completas, lotes disponíveis com CTA de adicionar ao carrinho, histórico de pedidos.
+
+### Carrinho
+Itens com timer de reserva visível, totais e checkout.
+
+### Checkout
+Formulário simples com resumo do pedido.
+
+### Pedidos
+Cards de pedidos com status badges e ação de cancelamento.
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
+
+## 📞 Contato
+
+Para mais informações sobre a arquitetura e documentação técnica, consulte o repositório do backend.
+
+---
+
+Desenvolvido com 💚 e ♻️ para um futuro mais sustentável
