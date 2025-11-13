@@ -9,13 +9,15 @@ import { Label } from '@/components/ui/label';
 import { ArrowLeft } from 'lucide-react';
 import { CheckoutSummary } from '../components/CheckoutSummary';
 import { useCartStore } from '@/store/cart.store';
-import { ordersApi } from '../services/orders.api';
+import { useDataStore } from '@/store/data.store';
 import { checkoutSchema, CheckoutForm } from '@/lib/validators';
 import { toast } from '@/hooks/use-toast';
+import { formatCurrency } from '@/lib/format';
 
 export const CheckoutPage = () => {
   const navigate = useNavigate();
   const { items, clearCart } = useCartStore();
+  const { createOrder, updateBatch } = useDataStore();
   const [submitting, setSubmitting] = useState(false);
 
   const {
@@ -45,26 +47,35 @@ export const CheckoutPage = () => {
     try {
       setSubmitting(true);
       
-      const order = await ordersApi.create({
-        buyerName: data.buyerName,
-        items: items.map(item => ({
-          batchId: item.batchId,
+      // Criar um pedido para cada item do carrinho
+      for (const item of items) {
+        createOrder({
           projectId: item.projectId,
+          batchId: item.batchId,
+          buyerName: data.buyerName,
           qtyTons: item.qtyTons,
-          pricePerTon: item.pricePerTon,
-        })),
-      });
+          total: item.subtotal,
+          status: 'PENDING',
+        });
+        
+        // Atualizar status do batch para RESERVED
+        updateBatch(item.batchId, { status: 'RESERVED' });
+      }
 
       clearCart();
       
       toast({
         title: 'Pedido realizado!',
-        description: `Pedido #${order.id.slice(0, 8)} criado com sucesso`,
+        description: `Total: ${formatCurrency(total)}`,
       });
 
       navigate('/orders');
     } catch (err) {
-      // Error handled by interceptor
+      toast({
+        title: 'Erro ao criar pedido',
+        description: 'Tente novamente mais tarde',
+        variant: 'destructive',
+      });
     } finally {
       setSubmitting(false);
     }

@@ -2,9 +2,16 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Leaf, Search, ShoppingBag, Zap, Award, TrendingUp } from 'lucide-react';
+import { useDataStore } from '@/store/data.store';
+import { formatCurrency, formatTons } from '@/lib/format';
 
 export const HomePage = () => {
   const navigate = useNavigate();
+  const { getBatches, getProjectById } = useDataStore();
+
+  const availableBatches = getBatches()
+    .filter(b => b.status === 'AVAILABLE')
+    .slice(0, 3);
 
   return (
     <div className="min-h-screen">
@@ -113,6 +120,42 @@ export const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* Available Batches Section */}
+      {availableBatches.length > 0 && (
+        <section className="py-20 bg-muted/50">
+          <div className="container">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Lotes Disponíveis</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Confira alguns dos lotes de créditos de carbono disponíveis agora
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {availableBatches.map((batch) => {
+                const project = getProjectById(batch.projectId);
+                return (
+                  <Card key={batch.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/projects/${batch.projectId}`)}>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{project?.name || 'Projeto'}</CardTitle>
+                      <CardDescription>Lote {batch.id.slice(0, 8)}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        {formatTons(batch.tonsCO2)}
+                      </p>
+                      <p className="text-lg font-bold text-accent">
+                        {formatCurrency(batch.pricePerTon)}/ton
+                      </p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-t from-primary/10 to-background">

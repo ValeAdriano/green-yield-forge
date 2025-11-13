@@ -11,7 +11,7 @@ import { AggregateProject } from '@/types';
 import { formatCurrency, formatTons, formatDate } from '@/lib/format';
 import { useCartStore } from '@/store/cart.store';
 import { toast } from '@/hooks/use-toast';
-import { getProjectById, getBatchesByProjectId, getOrdersByProjectId } from '@/data/mockData';
+import { useDataStore } from '@/store/data.store';
 
 export const ProjectDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +20,7 @@ export const ProjectDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const { addItem } = useCartStore();
+  const { getProjectAggregate } = useDataStore();
 
   const loadData = async () => {
     if (!id) return;
@@ -29,16 +30,13 @@ export const ProjectDetailPage = () => {
       // Simulando delay de API
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      const project = getProjectById(id);
-      if (!project) {
+      const aggregate = getProjectAggregate(id);
+      if (!aggregate) {
         setError(true);
         return;
       }
       
-      const batches = getBatchesByProjectId(id);
-      const lastOrders = getOrdersByProjectId(id);
-      
-      setData({ project, batches, lastOrders });
+      setData(aggregate);
     } catch (err) {
       setError(true);
     } finally {

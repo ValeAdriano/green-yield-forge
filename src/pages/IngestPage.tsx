@@ -9,10 +9,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Zap } from 'lucide-react';
 import { ingestEventSchema, IngestEvent } from '@/lib/validators';
-import { eventsApi } from '@/features/events/services/events.api';
+import { useDataStore } from '@/store/data.store';
 import { toast } from '@/hooks/use-toast';
 
 export const IngestPage = () => {
+  const { createProject, createBatch } = useDataStore();
   const [submitting, setSubmitting] = useState(false);
 
   const {
@@ -33,16 +34,36 @@ export const IngestPage = () => {
   const onSubmit = async (data: IngestEvent) => {
     try {
       setSubmitting(true);
-      const result = await eventsApi.ingest(data);
+      
+      // Criar projeto
+      const newProject = createProject({
+        name: data.project.name,
+        location: data.project.location,
+        hectares: data.project.hectares,
+        description: data.project.description,
+        certifier: data.project.certifier,
+      });
+      
+      // Criar lote para o projeto
+      const newBatch = createBatch({
+        projectId: newProject.id,
+        tonsCO2: data.batch.tonsCO2,
+        pricePerTon: data.batch.pricePerTon,
+        status: data.batch.status,
+      });
       
       toast({
         title: 'Ingestão concluída!',
-        description: `Projeto: ${result.projectId.slice(0, 8)}, Lote: ${result.batchId.slice(0, 8)}`,
+        description: `Projeto "${newProject.name}" criado com lote de ${data.batch.tonsCO2} tCO₂`,
       });
 
       reset();
     } catch (err) {
-      // Error handled by interceptor
+      toast({
+        title: 'Erro na ingestão',
+        description: 'Tente novamente mais tarde',
+        variant: 'destructive',
+      });
     } finally {
       setSubmitting(false);
     }

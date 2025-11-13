@@ -10,7 +10,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { Package } from 'lucide-react';
 import { Project, Batch, ProjectFilters as Filters } from '@/types';
 import { useUIStore } from '@/store/ui.store';
-import { mockProjects, mockBatches } from '@/data/mockData';
+import { useDataStore } from '@/store/data.store';
 
 export const ProjectsListPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -20,6 +20,7 @@ export const ProjectsListPage = () => {
   const [filters, setFilters] = useState<Filters>({});
   
   const { setCompareDrawerOpen, addToCompare } = useUIStore();
+  const { getProjects, getBatches } = useDataStore();
 
   const loadData = async () => {
     try {
@@ -27,8 +28,8 @@ export const ProjectsListPage = () => {
       setError(false);
       // Simulando delay de API
       await new Promise(resolve => setTimeout(resolve, 500));
-      setProjects(mockProjects);
-      setBatches(mockBatches);
+      setProjects(getProjects());
+      setBatches(getBatches());
     } catch (err) {
       setError(true);
     } finally {

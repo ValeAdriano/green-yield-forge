@@ -7,7 +7,7 @@ import { Package } from 'lucide-react';
 import { Order } from '@/types';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { toast } from '@/hooks/use-toast';
-import { mockOrders } from '@/data/mockData';
+import { useDataStore } from '@/store/data.store';
 
 export const OrdersListPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -15,6 +15,8 @@ export const OrdersListPage = () => {
   const [error, setError] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  
+  const { getOrders, cancelOrder } = useDataStore();
 
   const loadOrders = async () => {
     try {
@@ -22,7 +24,7 @@ export const OrdersListPage = () => {
       setError(false);
       // Simulando delay de API
       await new Promise(resolve => setTimeout(resolve, 500));
-      setOrders(mockOrders);
+      setOrders(getOrders());
     } catch (err) {
       setError(true);
     } finally {
@@ -45,11 +47,8 @@ export const OrdersListPage = () => {
     try {
       // Simulando cancelamento
       await new Promise(resolve => setTimeout(resolve, 500));
-      setOrders(orders.map(order => 
-        order.id === selectedOrderId 
-          ? { ...order, status: 'CANCELLED' as const }
-          : order
-      ));
+      cancelOrder(selectedOrderId);
+      setOrders(getOrders());
       toast({
         title: 'Pedido cancelado',
         description: 'O pedido foi cancelado com sucesso',
